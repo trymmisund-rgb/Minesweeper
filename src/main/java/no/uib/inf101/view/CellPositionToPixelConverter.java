@@ -1,7 +1,10 @@
-package no.uib.inf101.sample;
+package no.uib.inf101.view;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+
+import no.uib.inf101.grid.CellPosition;
+import no.uib.inf101.grid.GridDimension;
 
 /**
  * A CellPositionToPixelConverter is an object which can translate
@@ -12,8 +15,8 @@ public class CellPositionToPixelConverter {
   private final Rectangle2D box;
   private final GridDimension gd;
   private final double margin;
-  private double cellW;
-  private double cellH;
+  private final double cellW;
+  private final double cellH;
   
   /**
    * Constructs a new CellPositionToPixelConverter.
