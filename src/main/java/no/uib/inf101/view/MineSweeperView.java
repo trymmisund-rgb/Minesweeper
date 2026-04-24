@@ -15,28 +15,51 @@ import no.uib.inf101.grid.GridDimension;
 import no.uib.inf101.model.GameState;
 
 /**
- * A view of a grid
+ * The view component of the Minesweeper game.
+ * Responsible for rendering the board, HUD, start screen, and game over/won overlays.
+ * Reads state only through ViewableMineSweeperModel.
  */
 public class MineSweeperView extends JPanel {
 
+  private static final int CELL_SIZE = 27;
   private static final int OUTER_MARGIN = 50;
   private static final int INNER_MARGIN = 0;
 
 
   private final ViewableMineSweeperModel model;
 
-  /** Construct a new View */
+  /**
+     * Constructs a new MineSweeperView.
+     * Sets the preferred size based on the current board dimensions and starts a repaint timer.
+     *
+     * @param model the viewable model to read game state from
+     */
   public MineSweeperView(ViewableMineSweeperModel model) {
     this.model = model;
-    this.setPreferredSize(new Dimension(600, 600));
+    this.setPreferredSize(new Dimension(400, 400));
     Timer timer = new Timer(1000, e -> repaint());
     timer.start();
+  }
+
+  /**
+   * Updates the preferred size of the view based on the current board dimensions.
+   * Should be called after difficulty changes, followed by frame.pack().
+   */
+  public void updateSize(){
+    int cols = model.getBoard().cols();
+    int rows = model.getBoard().rows();
+    int width = cols * CELL_SIZE + 2*OUTER_MARGIN;
+    int height = rows * CELL_SIZE + 2*OUTER_MARGIN;
+    this.setPreferredSize(new Dimension(width, height));
   }
 
   @Override
   protected void paintComponent(Graphics g) {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D) g;
+
+    g2.setColor(new Color(189, 189, 189)); // samme grå som cellene
+    g2.fillRect(0, 0, getWidth(), getHeight());
     
     if (model.getGameState() == GameState.START_SCREEN) {
         drawStartScreen(g2);
@@ -78,16 +101,12 @@ public class MineSweeperView extends JPanel {
         g2.fillRect(x, y, w, h);
 
         g2.setColor(new Color(255, 255, 255));
-        g2.fillRect(x, y, w, 2);
-        g2.fillRect(x, y, 2, h);
+        g2.fillRect(x, y, w - 3, 3);
+        g2.fillRect(x, y, 3, h - 3);
 
         g2.setColor(new Color(80, 80, 80));
-        g2.fillRect(x, y + h - 2, w, 2);
-        g2.fillRect(x + w - 2, y, 2, h);
-
-        g2.setColor(new Color(128, 128, 128)); 
-        g2.fillRect(x, y + h - 2, w, 2);
-        g2.fillRect(x + w - 2, y, 2, h);
+        g2.fillRect(x, y + h - 3, w, 3);
+        g2.fillRect(x + w - 3, y, 3, h);
     }
   }
   
@@ -180,38 +199,31 @@ public class MineSweeperView extends JPanel {
     }
     
     private void drawGameOver(Graphics2D g2){
-      g2.setColor(new Color(0, 0, 0, 150)); 
+      g2.setColor(new Color(0, 0, 0, 150));
       g2.fillRect(0, 0, getWidth(), getHeight());
-      g2.setColor(Color.RED);
-      g2.setFont(g2.getFont().deriveFont(30f));
-      String mainText = "Game Over! Press Enter to restart";
-      float xMain = (float) (getWidth() / 2 - g2.getFontMetrics().stringWidth(mainText) / 2);
-      float yMain = getHeight() / 2f;
-      g2.drawString(mainText, xMain, yMain);
 
-      g2.setFont(g2.getFont().deriveFont(18f));
-      String subText = "Press ESCAPE for start screen";
-      float xSub = (float) (getWidth() / 2 - g2.getFontMetrics().stringWidth(subText) / 2);
-      float ySub = yMain + 30;
-      g2.drawString(subText, xSub, ySub);
+      float fontSize = Math.min(30f, getWidth() / 14f);
+      g2.setFont(g2.getFont().deriveFont(java.awt.Font.BOLD, fontSize));
+      g2.setColor(Color.RED);
+      drawCentered(g2, "Game Over!", (int)(getHeight() / 2f - fontSize));
+
+      g2.setFont(g2.getFont().deriveFont(fontSize * 0.55f));
+      drawCentered(g2, "Enter = restart  |  Escape = menu", (int)(getHeight() / 2f + fontSize * 0.3f));
     }
 
     private void drawGameWon(Graphics2D g2) {
       g2.setColor(new Color(0, 0, 0, 150));
       g2.fillRect(0, 0, getWidth(), getHeight());
-      g2.setColor(Color.GREEN);
-      g2.setFont(g2.getFont().deriveFont(30f));
-      String mainText = "You Won! Press Enter to restart";
-      float xMain = (float) (getWidth() / 2 - g2.getFontMetrics().stringWidth(mainText) / 2);
-      float yMain = getHeight() / 2f;
-      g2.drawString(mainText, xMain, yMain);
 
-      g2.setFont(g2.getFont().deriveFont(18f));
-      String subText = "Press ESCAPE for start screen";
-      float xSub = (float) (getWidth() / 2 - g2.getFontMetrics().stringWidth(subText) / 2);
-      float ySub = yMain + 30;
-      g2.drawString(subText, xSub, ySub);
+      float fontSize = Math.min(30f, getWidth() / 14f);
+      g2.setFont(g2.getFont().deriveFont(java.awt.Font.BOLD, fontSize));
+      g2.setColor(Color.GREEN);
+      drawCentered(g2, "Game Won!", (int)(getHeight() / 2f - fontSize));
+
+      g2.setFont(g2.getFont().deriveFont(fontSize * 0.55f));
+      drawCentered(g2, "Enter = restart  |  Escape = meny", (int)(getHeight() / 2f + fontSize * 0.3f));
     }
+    
 
     private void drawStartScreen(Graphics2D g2) {
       g2.setColor(Color.DARK_GRAY);

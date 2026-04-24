@@ -7,7 +7,7 @@ public interface IGrid extends GridDimension{
 	 * method will overwrite any previous value that was stored at the location.
 	 * 
 	 * @param pos   the position in which to store the value
-	 * @param cell 
+	 * @param cell	the GridCell to store at the given position
 	 * @throws IndexOutOfBoundsException if the position does not exist in the grid
 	 */
 	public void set(CellPosition pos, GridCell cell);

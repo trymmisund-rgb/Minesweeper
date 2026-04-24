@@ -13,12 +13,12 @@ public class Main {
   public static void main(String[] args) {
     MineSweeperModel model = new MineSweeperModel();
     MineSweeperView view = new MineSweeperView(model);
-    new MineSweeperController(model, view);
 
     JFrame frame = new JFrame();
     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     frame.setTitle("INF101 MineSweeper");
     frame.setContentPane(view);
+    new MineSweeperController(model, view, frame);
     frame.pack();
     frame.setVisible(true);
   }

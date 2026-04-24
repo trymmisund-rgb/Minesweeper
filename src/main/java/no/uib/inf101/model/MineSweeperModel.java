@@ -11,6 +11,13 @@ import no.uib.inf101.model.mines.MineFactory;
 import no.uib.inf101.model.mines.RandomMineFactory;
 import no.uib.inf101.view.ViewableMineSweeperModel;
 
+/**
+ * The main model for the Minesweeper game.
+ * Implements all game logic including mine placement, cell revealing,
+ * flagging, win/loss detection, and timer tracking.
+ * Implements both ControllableMineSweeperModel and ViewableMineSweeperModel.
+ */
+
 public class MineSweeperModel implements ControllableMineSweeperModel, ViewableMineSweeperModel{
 
     private MineSweeperBoard board;
@@ -21,10 +28,20 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
     private final MineFactory mineFactory;
     private CellPosition lastRevealedMine = null;
    
+    /**
+     * Constructs a new MineSweeperModel with random mine placement.
+     * The initial game state is START_SCREEN.
+     */
     public MineSweeperModel(){
         this(new RandomMineFactory());
     }
 
+    /**
+     * Constructs a new MineSweeperModel with the given MineFactory.
+     * Useful for testing with a FixedMineFactory to control mine placement.
+     *
+     * @param mineFactory the factory used to generate mine positions
+     */
     public MineSweeperModel(MineFactory mineFactory) {
         this.mineFactory = mineFactory;
         this.difficulty = Difficulty.EASY;
