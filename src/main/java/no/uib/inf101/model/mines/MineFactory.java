@@ -5,6 +5,10 @@ import java.util.List;
 import no.uib.inf101.grid.CellPosition;
 import no.uib.inf101.model.MineSweeperBoard;
 
+/**
+ * A factory interface for generating mine positions on a Minesweeper board.
+ */
+
 public interface MineFactory {
 
     /**

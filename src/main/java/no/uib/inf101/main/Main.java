@@ -7,7 +7,8 @@ import no.uib.inf101.model.MineSweeperModel;
 import no.uib.inf101.view.MineSweeperView;
 
 /**
- * Main class showing the demo for a clickable grid
+ * Entry point for the Minesweeper application.
+ * Sets up the model, view, and controller and displays the game window.
  */
 public class Main {
   public static void main(String[] args) {

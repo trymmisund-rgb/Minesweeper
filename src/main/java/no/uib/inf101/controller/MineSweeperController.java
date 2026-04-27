@@ -22,26 +22,27 @@ import no.uib.inf101.view.MineSweeperView;
 
 public class MineSweeperController extends MouseAdapter implements java.awt.event.KeyListener{
   
-  private final ControllableMineSweeperModel controllableMineSweeperModel;
-  private MineSweeperView view;
+  private final ControllableMineSweeperModel model;
+  private final MineSweeperView view;
   private final Timer timer;
   private final JFrame frame;
 
   /**
-   * Construct a controller recating to key presses.
+   * Construct a controller recating to key presses and mouse clicks.
    * 
    * @param model model to update on key press
    * @param view view to listen to key presses in, and to be repainted when model changes
+   * @param frame the JFrame, used to resize the window when difficulty changes
    */
   public MineSweeperController(ControllableMineSweeperModel model, MineSweeperView view, JFrame frame) {
-    this.controllableMineSweeperModel = model;
+    this.model = model;
     this.view = view;
     this.frame = frame;
     view.addMouseListener(this);
     view.addKeyListener(this);
     view.setFocusable(true);
     this.timer = new Timer(1000, e -> {
-      controllableMineSweeperModel.incrementTime();
+      model.incrementTime();
       this.view.repaint();
     });
     timer.start();
@@ -54,47 +55,47 @@ public class MineSweeperController extends MouseAdapter implements java.awt.even
     CellPosition pos = converter.getCellPositionOfPoint(mouseCoordinate);
     if (pos == null) return;
     if (event.getButton() == MouseEvent.BUTTON1) {
-        controllableMineSweeperModel.reveal(pos);
+        model.reveal(pos);
     } else if (event.getButton() == MouseEvent.BUTTON3) {
-        controllableMineSweeperModel.toggleFlag(pos);
+        model.toggleFlag(pos);
     }
     view.repaint();
   }
 
   @Override
   public void keyPressed(KeyEvent e) {
-    if (controllableMineSweeperModel.getGameState() == GameState.START_SCREEN) {
+    if (model.getGameState() == GameState.START_SCREEN) {
         if (e.getKeyCode() == KeyEvent.VK_1) {
-            controllableMineSweeperModel.setDifficulty(Difficulty.EASY);
+            model.setDifficulty(Difficulty.EASY);
             view.updateSize();
             frame.pack();
         } else if (e.getKeyCode() == KeyEvent.VK_2) {
-            controllableMineSweeperModel.setDifficulty(Difficulty.MEDIUM);
+            model.setDifficulty(Difficulty.MEDIUM);
             view.updateSize();
             frame.pack();
         } else if (e.getKeyCode() == KeyEvent.VK_3) {
-            controllableMineSweeperModel.setDifficulty(Difficulty.HARD);
+            model.setDifficulty(Difficulty.HARD);
             view.updateSize();
             frame.pack();
         }
         view.repaint();
         return;
     }
-    if (controllableMineSweeperModel.getGameState() == GameState.GAME_OVER || controllableMineSweeperModel.getGameState() == GameState.GAME_WON) {
+    if (model.getGameState() == GameState.GAME_OVER || model.getGameState() == GameState.GAME_WON) {
       if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-          controllableMineSweeperModel.resetGame();
+          model.resetGame();
           timer.restart();
           view.repaint();
       }
       if (e.getKeyCode() == KeyEvent.VK_ESCAPE){
-        controllableMineSweeperModel.goToStartScreen();
+        model.goToStartScreen();
         timer.restart();
         view.repaint();
       }
     }
-    if (controllableMineSweeperModel.getGameState() == GameState.ACTIVE || controllableMineSweeperModel.getGameState() == GameState.FIRST_MOVE){
+    if (model.getGameState() == GameState.ACTIVE || model.getGameState() == GameState.FIRST_MOVE){
       if(e.getKeyCode() == KeyEvent.VK_ESCAPE){
-        controllableMineSweeperModel.goToStartScreen();
+        model.goToStartScreen();
         timer.restart();
         view.repaint();
       }

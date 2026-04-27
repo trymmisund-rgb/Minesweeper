@@ -2,6 +2,11 @@ package no.uib.inf101.grid;
 
 import java.util.Iterator;
 
+/**
+ * An iterable over all positions in a grid, traversing row by row
+ * from top-left to bottom-right.
+ */
+
 public class Positions implements Iterable<CellPosition>{
     private final GridDimension grid;
 	
@@ -15,6 +20,13 @@ public class Positions implements Iterable<CellPosition>{
 	}
 
 }
+
+/**
+ * Iterator that traverses all positions in a grid row by row,
+ * from top-left to bottom-right.
+ * Advances column by column, moving to the next row when the end
+ * of a row is reached.
+ */
 
 class PositionIterator implements Iterator<CellPosition>{
 
