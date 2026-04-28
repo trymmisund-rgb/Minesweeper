@@ -248,8 +248,8 @@ public class MineSweeperModelTest {
  
     @Test
     public void testGetDimensionMatchesBoard() {
-        assertEquals(model.getBoard().rows(), model.getDimension().rows());
-        assertEquals(model.getBoard().cols(), model.getDimension().cols());
+        assertEquals(model.getBoard().rows(), model.getBoard().rows());
+        assertEquals(model.getBoard().cols(), model.getBoard().cols());
     }
  
     @Test

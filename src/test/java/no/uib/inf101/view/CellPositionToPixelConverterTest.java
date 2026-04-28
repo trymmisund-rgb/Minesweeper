@@ -1,8 +1,10 @@
 package no.uib.inf101.view;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import org.junit.jupiter.api.Test;
 
 import no.uib.inf101.grid.CellPosition;
@@ -25,4 +27,29 @@ public class CellPositionToPixelConverterTest {
         assertEquals(expected, converter.getBoundsForCell(new CellPosition(1, 2)));
     }
 
+    @Test
+    public void testGetCellPositionOfPointCenter() {
+        CellPositionToPixelConverter converter = makeConverter(4, 5);
+        CellPosition original = new CellPosition(1, 2);
+        Rectangle2D bounds = converter.getBoundsForCell(original);
+        Point2D center = new Point2D.Double(bounds.getCenterX(), bounds.getCenterY());
+        assertEquals(original, converter.getCellPositionOfPoint(center));
+    }
+
+    @Test
+    public void testGetCellPositionOfPointOutsideReturnsNull() {
+        CellPositionToPixelConverter converter = makeConverter(4, 5);
+        assertNull(converter.getCellPositionOfPoint(new Point2D.Double(-10, -10)));
+    }
+
+    @Test
+    public void testRoundTripAllCells() {
+        CellPositionToPixelConverter converter = makeConverter(5, 8);
+        GridDimension gd = new Grid(5, 8);
+        for (CellPosition original : gd.positions()) {
+            Rectangle2D bounds = converter.getBoundsForCell(original);
+            Point2D center = new Point2D.Double(bounds.getCenterX(), bounds.getCenterY());
+            assertEquals(original, converter.getCellPositionOfPoint(center));
+        }
+    }
 }

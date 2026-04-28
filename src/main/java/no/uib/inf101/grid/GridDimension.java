@@ -6,13 +6,13 @@ package no.uib.inf101.grid;
  */
 public interface GridDimension {
 
-  /** Number of rows in the grid */
-  int rows();
+  	/** Number of rows in the grid */
+ 	 int rows();
 
-  /** Number of columns in the grid */
-  int cols();
+  	/** Number of columns in the grid */
+  	int cols();
 
-  /**
+  	/**
  	* Returns an iterable containing all positions in the grid.
  	*
  	* @return an iterable over every cell position in the grid

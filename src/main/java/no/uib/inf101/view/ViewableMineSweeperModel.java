@@ -1,7 +1,6 @@
 package no.uib.inf101.view;
 
 import no.uib.inf101.grid.CellPosition;
-import no.uib.inf101.grid.GridDimension;
 import no.uib.inf101.model.GameState;
 import no.uib.inf101.model.MineSweeperBoard;
 
@@ -26,13 +25,6 @@ public interface ViewableMineSweeperModel {
      * @return the current GameState
      */
     public GameState getGameState();
-
-    /**
-     * Returns the grid dimension, which is the board itself.
-     *
-     * @return the GridDimension of the board
-     */
-    public GridDimension getDimension();
 
     /**
      * Returns the number of seconds elapsed since the game started.

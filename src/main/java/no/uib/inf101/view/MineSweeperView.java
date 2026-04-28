@@ -58,7 +58,7 @@ public class MineSweeperView extends JPanel {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D) g;
 
-    g2.setColor(new Color(189, 189, 189)); // samme grå som cellene
+    g2.setColor(new Color(189, 189, 189)); 
     g2.fillRect(0, 0, getWidth(), getHeight());
     
     if (model.getGameState() == GameState.START_SCREEN) {
@@ -194,7 +194,7 @@ public class MineSweeperView extends JPanel {
      OUTER_MARGIN,
      this.getWidth() - 2 * OUTER_MARGIN,
      this.getHeight() - 2 * OUTER_MARGIN);
-     GridDimension gridSize = this.model.getDimension();
+     GridDimension gridSize = this.model.getBoard();
      return new CellPositionToPixelConverter(bounds, gridSize, INNER_MARGIN);
     }
     

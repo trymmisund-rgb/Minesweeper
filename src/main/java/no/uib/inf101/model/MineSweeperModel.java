@@ -6,7 +6,6 @@ import java.util.List;
 import no.uib.inf101.controller.ControllableMineSweeperModel;
 import no.uib.inf101.grid.CellPosition;
 import no.uib.inf101.grid.GridCell;
-import no.uib.inf101.grid.GridDimension;
 import no.uib.inf101.model.mines.MineFactory;
 import no.uib.inf101.model.mines.RandomMineFactory;
 import no.uib.inf101.view.ViewableMineSweeperModel;
@@ -193,11 +192,6 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         this.flagsLeft = board.getMines();
         this.elapsedSeconds = 0;
         gameState = GameState.FIRST_MOVE;
-    }
-
-    @Override
-    public GridDimension getDimension() {
-        return board;
     }
 
     @Override
