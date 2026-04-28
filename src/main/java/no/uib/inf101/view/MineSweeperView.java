@@ -73,116 +73,6 @@ public class MineSweeperView extends JPanel {
         drawGameWon(g2);
     }
   }
-
-  private void drawBoard(Graphics2D g2) {
-    CellPositionToPixelConverter converter = this.getCellPositionToPixelConverter();
-    for (CellPosition pos : model.getBoard().positions()) {
-      Rectangle2D box = converter.getBoundsForCell(pos);
-      GridCell cell = model.getBoard().get(pos);
-      
-      drawCellBackGround(g2, cell, box);
-      drawCellContent(g2, cell, box, pos);
-    }
-  }
-  
-  private void drawCellBackGround(Graphics2D g2, GridCell cell, Rectangle2D box) {
-    if (cell.revealed()) {
-        g2.setColor(new Color(160, 160, 160));
-        g2.fill(box);
-        g2.setColor(new Color(100, 100, 100));
-        g2.draw(box);
-    } else {
-        int x = (int) box.getX();
-        int y = (int) box.getY();
-        int w = (int) box.getWidth();
-        int h = (int) box.getHeight();
-
-        g2.setColor(new Color(189, 189, 189));
-        g2.fillRect(x, y, w, h);
-
-        g2.setColor(new Color(255, 255, 255));
-        g2.fillRect(x, y, w - 3, 3);
-        g2.fillRect(x, y, 3, h - 3);
-
-        g2.setColor(new Color(80, 80, 80));
-        g2.fillRect(x, y + h - 3, w, 3);
-        g2.fillRect(x + w - 3, y, 3, h);
-    }
-  }
-  
-  private void drawCellContent(Graphics2D g2, GridCell cell, Rectangle2D box, CellPosition pos) {
-    if (!cell.revealed() && cell.flagged()){
-      drawFlag(g2, box);
-      return;
-    }
-    if (cell.revealed() && cell.hasMine()) {
-        if (pos.equals(model.getLastRevealedMine())){
-          g2.setColor(Color.RED);
-          g2.fill(box);
-        }
-        drawMine(g2, box);
-        return;
-    }
-
-    if (cell.revealed() && cell.neighbormines() > 0) {
-      g2.setColor(getNumberColor(cell.neighbormines()));
-      g2.setFont(g2.getFont().deriveFont(java.awt.Font.BOLD, 14f));
-      String text = String.valueOf(cell.neighbormines());
-      float x = (float) (box.getCenterX() - g2.getFontMetrics().stringWidth(text) / 2);
-      float y = (float) (box.getCenterY() + g2.getFontMetrics().getAscent() / 2);
-      g2.drawString(text, x, y);
-    }
-    
-  }
-  private void drawFlag(Graphics2D g2, Rectangle2D box) {
-    double x = box.getX();
-    double y = box.getY();
-    double w = box.getWidth();
-    double h = box.getHeight();
-    
-    g2.setColor(Color.BLACK);
-    g2.fillRect((int)(x + w * 0.45), (int)(y + h * 0.2),
-    (int)(w * 0.1), (int)(h * 0.6));
-    
-    int[] xPoints = {
-      (int)(x + w * 0.5),
-      (int)(x + w * 0.8),
-      (int)(x + w * 0.5)
-    };
-    
-    int[] yPoints = {
-      (int)(y + h * 0.2),
-      (int)(y + h * 0.35),
-      (int)(y + h * 0.5)
-    };
-    
-    g2.setColor(Color.RED);
-    g2.fillPolygon(xPoints, yPoints, 3);
-  }
-  private void drawMine(Graphics2D g2, Rectangle2D box) {
-    int x = (int) box.getX();
-    int y = (int) box.getY();
-    int w = (int) box.getWidth();
-    int h = (int) box.getHeight();
-    int cx = x + w / 2;
-    int cy = y + h / 2;
-    int r = (int) (Math.min(w, h) * 0.3);
-
-    g2.setColor(Color.BLACK);
-    g2.setStroke(new java.awt.BasicStroke(1.5f));
-    g2.drawLine(cx - r - 2, cy, cx + r + 2, cy); 
-    g2.drawLine(cx, cy - r - 2, cx, cy + r + 2); 
-    g2.drawLine(cx - r, cy - r, cx + r, cy + r); 
-    g2.drawLine(cx + r, cy - r, cx - r, cy + r); 
-
-    
-    g2.fillOval(cx - r, cy - r, r * 2, r * 2);
-
-    g2.setColor(Color.WHITE);
-    g2.fillOval(cx - r / 3, cy - r / 2, r / 3, r / 3);
-    
-    g2.setStroke(new java.awt.BasicStroke(1f)); // reset stroke
-}
   
   /**
    * Gets an object which converts between CellPosition in a grid and 
@@ -197,7 +87,119 @@ public class MineSweeperView extends JPanel {
      GridDimension gridSize = this.model.getBoard();
      return new CellPositionToPixelConverter(bounds, gridSize, INNER_MARGIN);
     }
+
+    private void drawBoard(Graphics2D g2) {
+      CellPositionToPixelConverter converter = this.getCellPositionToPixelConverter();
+      for (CellPosition pos : model.getBoard().positions()) {
+        Rectangle2D box = converter.getBoundsForCell(pos);
+        GridCell cell = model.getBoard().get(pos);
+        
+        drawCellBackGround(g2, cell, box);
+        drawCellContent(g2, cell, box, pos);
+      }
+    }
+
+    private void drawCellBackGround(Graphics2D g2, GridCell cell, Rectangle2D box) {
+      if (cell.revealed()) {
+          g2.setColor(new Color(160, 160, 160));
+          g2.fill(box);
+          g2.setColor(new Color(100, 100, 100));
+          g2.draw(box);
+      } else {
+          int x = (int) box.getX();
+          int y = (int) box.getY();
+          int w = (int) box.getWidth();
+          int h = (int) box.getHeight();
+   
+          g2.setColor(new Color(189, 189, 189));
+          g2.fillRect(x, y, w, h);
+   
+          g2.setColor(new Color(255, 255, 255));
+          g2.fillRect(x, y, w - 3, 3);
+          g2.fillRect(x, y, 3, h - 3);
+   
+          g2.setColor(new Color(80, 80, 80));
+          g2.fillRect(x, y + h - 3, w, 3);
+          g2.fillRect(x + w - 3, y, 3, h);
+      }
+    }
     
+    private void drawCellContent(Graphics2D g2, GridCell cell, Rectangle2D box, CellPosition pos) {
+      if (!cell.revealed() && cell.flagged()){
+        drawFlag(g2, box);
+        return;
+      }
+      if (cell.revealed() && cell.hasMine()) {
+          if (pos.equals(model.getLastRevealedMine())){
+            g2.setColor(Color.RED);
+            g2.fill(box);
+          }
+          drawMine(g2, box);
+          return;
+      }
+   
+      if (cell.revealed() && cell.neighbormines() > 0) {
+        g2.setColor(getNumberColor(cell.neighbormines()));
+        g2.setFont(g2.getFont().deriveFont(java.awt.Font.BOLD, 14f));
+        String text = String.valueOf(cell.neighbormines());
+        float x = (float) (box.getCenterX() - g2.getFontMetrics().stringWidth(text) / 2);
+        float y = (float) (box.getCenterY() + g2.getFontMetrics().getAscent() / 2);
+        g2.drawString(text, x, y);
+      }
+      
+    }
+
+    private void drawFlag(Graphics2D g2, Rectangle2D box) {
+      double x = box.getX();
+      double y = box.getY();
+      double w = box.getWidth();
+      double h = box.getHeight();
+      
+      g2.setColor(Color.BLACK);
+      g2.fillRect((int)(x + w * 0.45), (int)(y + h * 0.2),
+      (int)(w * 0.1), (int)(h * 0.6));
+      
+      int[] xPoints = {
+        (int)(x + w * 0.5),
+        (int)(x + w * 0.8),
+        (int)(x + w * 0.5)
+      };
+      
+      int[] yPoints = {
+        (int)(y + h * 0.2),
+        (int)(y + h * 0.35),
+        (int)(y + h * 0.5)
+      };
+      
+      g2.setColor(Color.RED);
+      g2.fillPolygon(xPoints, yPoints, 3);
+    }
+    
+    private void drawMine(Graphics2D g2, Rectangle2D box) {
+      int x = (int) box.getX();
+      int y = (int) box.getY();
+      int w = (int) box.getWidth();
+      int h = (int) box.getHeight();
+      int cx = x + w / 2;
+      int cy = y + h / 2;
+      int r = (int) (Math.min(w, h) * 0.3);
+   
+      g2.setColor(Color.BLACK);
+      g2.setStroke(new java.awt.BasicStroke(1.5f));
+      g2.drawLine(cx - r - 2, cy, cx + r + 2, cy); 
+      g2.drawLine(cx, cy - r - 2, cx, cy + r + 2); 
+      g2.drawLine(cx - r, cy - r, cx + r, cy + r); 
+      g2.drawLine(cx + r, cy - r, cx - r, cy + r); 
+   
+      
+      g2.fillOval(cx - r, cy - r, r * 2, r * 2);
+   
+      g2.setColor(Color.WHITE);
+      g2.fillOval(cx - r / 3, cy - r / 2, r / 3, r / 3);
+      
+      g2.setStroke(new java.awt.BasicStroke(1f)); // reset stroke
+   }
+
     private void drawGameOver(Graphics2D g2){
       g2.setColor(new Color(0, 0, 0, 150));
       g2.fillRect(0, 0, getWidth(), getHeight());

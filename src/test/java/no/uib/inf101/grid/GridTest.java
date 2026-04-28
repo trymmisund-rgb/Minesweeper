@@ -83,7 +83,8 @@ public class GridTest {
         };
         int i = 0;
         for (CellPosition pos : grid.positions()) {
-            assertEquals(expected[i++], pos);
+            assertEquals(expected[i], pos);
+            i++;
         }
     }
 }

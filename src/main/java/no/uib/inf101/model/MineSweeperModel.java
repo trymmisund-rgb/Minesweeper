@@ -49,44 +49,20 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         this.flagsLeft = board.getMines();
     }    
 
-    private MineSweeperBoard createBoard(Difficulty difficulty) {
-        switch (difficulty){
-            case EASY:
-                return new MineSweeperBoard(8, 10, 10);
-            case MEDIUM:
-                return new MineSweeperBoard(14, 18, 40);
-            case HARD:
-                return new MineSweeperBoard(20, 24, 99);
-            default:
-                throw new IllegalArgumentException("Unknown difficulty");
-        }
-        
-    }
-    @Override
-    public void setDifficulty(Difficulty difficulty) {
-        if (difficulty == null)
-            throw new IllegalArgumentException();
-        this.difficulty = difficulty;
-        this.board = createBoard(difficulty);
-        this.flagsLeft = board.getMines();
-        this.elapsedSeconds = 0;
-        this.gameState = GameState.FIRST_MOVE;
-    }
-
     @Override
     public void reveal(CellPosition pos) {
         if (pos == null || !board.positionIsOnGrid(pos))
             return;
-
+        
         if (gameState == GameState.GAME_OVER || gameState == GameState.GAME_WON || gameState == GameState.START_SCREEN) {
             return;
         }
         if (!isValidClick(pos)) return;
-
+        
         if (gameState == GameState.FIRST_MOVE){
             startGame(pos);
         }
-
+        
         GridCell cell = board.get(pos);
         if(ignoredCells(cell)) return;
         
@@ -103,22 +79,9 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         if (board.allSafeCellsRevealed()){
             gameState = GameState.GAME_WON;
         }
-
+        
     }
-
-    private void calculateNeighborMines() {
-        for(CellPosition pos : board.positions()){
-            int count = 0;
-            for (CellPosition neighbor : board.getNeighbors(pos)) {
-                if (board.get(neighbor).hasMine()) {
-                    count++;
-                }
-            }
-            GridCell cell = board.get(pos);
-            board.set(pos, new GridCell(cell.hasMine(), false, false, count)); 
-        }
-    }
-
+    
     @Override
     public void toggleFlag(CellPosition pos) {
         if (gameState == GameState.GAME_OVER || gameState == GameState.GAME_WON) {
@@ -134,18 +97,7 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
             board.set(pos, new GridCell(cell.hasMine(), false, !cell.flagged(), cell.neighbormines()));
         }
     }
-
-    private void placeMines(CellPosition firstClick) {
-        List<CellPosition> excludedCellPositions = new ArrayList<>();
-        excludedCellPositions.add(firstClick);
-        excludedCellPositions.addAll(board.getNeighbors(firstClick));
-
-        List<CellPosition> mines = mineFactory.getMinePositions(board, board.getMines(), excludedCellPositions);
-        for (CellPosition pos : mines) {
-            board.set(pos, new GridCell(true, false, false, 0));
-        }
-    }
-
+    
     @Override
     public void startGame(CellPosition pos) {
         if (pos == null || !board.positionIsOnGrid(pos))
@@ -155,30 +107,31 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         gameState = GameState.ACTIVE;
     }
 
-    private void revealCell(CellPosition pos, GridCell cell){
-        board.set(pos, new GridCell(cell.hasMine(), true, false, cell.neighbormines()));
-    }
-    
-    
-    private void revealNeighbors(CellPosition pos){
-        for (CellPosition neighbor : board.getNeighbors(pos)) {
-            reveal(neighbor);
-        }
-    }
-
-    private boolean ignoredCells(GridCell cell){
-        return cell.flagged() || cell.revealed();
-    }
-
-    private boolean isValidClick(CellPosition pos){
-        return pos != null && board.positionIsOnGrid(pos);
-    }
-
     @Override
-    public int getFlagsLeft(){
-        return flagsLeft;
+    public void resetGame(){
+        this.board = createBoard(difficulty);
+        this.flagsLeft = board.getMines();
+        this.elapsedSeconds = 0;
+        gameState = GameState.FIRST_MOVE;
     }
-
+    
+    @Override
+    public void setDifficulty(Difficulty difficulty) {
+        if (difficulty == null)
+            throw new IllegalArgumentException();
+        this.difficulty = difficulty;
+        this.board = createBoard(difficulty);
+        this.flagsLeft = board.getMines();
+        this.elapsedSeconds = 0;
+        this.gameState = GameState.FIRST_MOVE;
+    }
+    
+    
+    @Override
+    public void goToStartScreen() {
+        gameState = GameState.START_SCREEN;
+    }
+    
     @Override
     public void incrementTime() {
         if (gameState == GameState.ACTIVE && elapsedSeconds < 999) {
@@ -187,39 +140,87 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
     }
 
     @Override
-    public void resetGame(){
-        this.board = createBoard(difficulty);
-        this.flagsLeft = board.getMines();
-        this.elapsedSeconds = 0;
-        gameState = GameState.FIRST_MOVE;
+    public int getFlagsLeft(){
+        return flagsLeft;
     }
 
     @Override
     public MineSweeperBoard getBoard() {
         return board;
     }
-
+    
     @Override
     public GameState getGameState(){
         return gameState;
     }
-
+    
     @Override
     public int getElapsedSeconds() {
         return elapsedSeconds;
     }
-
-    @Override
-    public void goToStartScreen() {
-        gameState = GameState.START_SCREEN;
-    }
-
+    
+    
     @Override
     public CellPosition getLastRevealedMine() {
         return lastRevealedMine;
     }
+    
+    private void calculateNeighborMines() {
+        for(CellPosition pos : board.positions()){
+            int count = 0;
+            for (CellPosition neighbor : board.getNeighbors(pos)) {
+                if (board.get(neighbor).hasMine()) {
+                    count++;
+                }
+            }
+            GridCell cell = board.get(pos);
+            board.set(pos, new GridCell(cell.hasMine(), false, false, count)); 
+        }
+    }
 
-  
+    private void placeMines(CellPosition firstClick) {
+        List<CellPosition> excludedCellPositions = new ArrayList<>();
+        excludedCellPositions.add(firstClick);
+        excludedCellPositions.addAll(board.getNeighbors(firstClick));
+        
+        List<CellPosition> mines = mineFactory.getMinePositions(board, board.getMines(), excludedCellPositions);
+        for (CellPosition pos : mines) {
+            board.set(pos, new GridCell(true, false, false, 0));
+        }
+    }
 
-
+    private void revealCell(CellPosition pos, GridCell cell){
+        board.set(pos, new GridCell(cell.hasMine(), true, false, cell.neighbormines()));
+    }
+    
+    private void revealNeighbors(CellPosition pos){
+        for (CellPosition neighbor : board.getNeighbors(pos)) {
+            reveal(neighbor);
+        }
+    }
+    
+    private boolean ignoredCells(GridCell cell){
+        return cell.flagged() || cell.revealed();
+    }
+    
+    private boolean isValidClick(CellPosition pos){
+        return pos != null && board.positionIsOnGrid(pos);
+    }
+    
+    private MineSweeperBoard createBoard(Difficulty difficulty) {
+        switch (difficulty){
+            case EASY:
+                return new MineSweeperBoard(8, 10, 10);
+            case MEDIUM:
+                return new MineSweeperBoard(14, 18, 40);
+            case HARD:
+                return new MineSweeperBoard(20, 24, 99);
+            default:
+                throw new IllegalArgumentException("Unknown difficulty");
+        }
+        
+    }
+    
+    
+    
 }
