@@ -4,6 +4,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -16,6 +17,7 @@ import no.uib.inf101.model.mines.FixedMineFactory;
 public class MineSweeperModelTest {
 
     private MineSweeperModel model;
+    private MineSweeperBoard board;
 
     @BeforeEach
     public void setUp() {
@@ -255,5 +257,36 @@ public class MineSweeperModelTest {
     @Test
     public void testLastRevealedMineNullInitially() {
         assertNull(model.getLastRevealedMine());
+    }
+ 
+    @Test
+    public void testRevealAllMinesIncludesFlagged() {
+        CellPosition minePos = new CellPosition(0, 1);
+        MineSweeperModel m = modelWithMineAt(minePos);
+        m.toggleFlag(minePos);
+        m.reveal(new CellPosition(4, 5)); 
+        m.reveal(minePos); 
+        assertTrue(m.getBoard().get(minePos).revealed()); 
+    }
+
+    @Test
+    public void testAllSafeCellsRevealed() {
+        CellPosition minePos = new CellPosition(0, 1);
+        MineSweeperModel m = modelWithMineAt(minePos);
+        m.reveal(new CellPosition(4, 5)); 
+        for (CellPosition pos : m.getBoard().positions()) {
+            if (!m.getBoard().get(pos).hasMine()) {
+                m.reveal(pos);
+            }
+        }
+        assertEquals(GameState.GAME_WON, m.getGameState());
+    }
+
+    @Test
+    public void testNotAllSafeCellsRevealed() {
+        CellPosition minePos = new CellPosition(0, 1);
+        MineSweeperModel m = modelWithMineAt(minePos);
+        m.reveal(new CellPosition(4, 5));
+        assertNotEquals(GameState.GAME_WON, m.getGameState()); 
     }
 }

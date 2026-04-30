@@ -3,7 +3,6 @@ package no.uib.inf101.model;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,41 +42,6 @@ public class MineSweeperBoardTest {
         GridCell cell = new GridCell(true, false, false, 0);
         board.set(pos, cell);
         assertEquals(cell, board.get(pos));
-    }
- 
-    @Test
-    public void testRevealAllMines() {
-        CellPosition minePos = new CellPosition(0, 0);
-        board.set(minePos, new GridCell(true, false, false, 0));
-        board.revealAllMines();
-        assertTrue(board.get(minePos).revealed());
-        assertFalse(board.get(new CellPosition(1, 1)).revealed());
-    }
- 
-    @Test
-    public void testRevealAllMinesIncludesFlagged() {
-        CellPosition minePos = new CellPosition(0, 0);
-        board.set(minePos, new GridCell(true, false, true, 0));
-        board.revealAllMines();
-        assertTrue(board.get(minePos).revealed());
-    }
- 
-    @Test
-    public void testAllSafeCellsRevealed() {
-        MineSweeperBoard small = new MineSweeperBoard(2, 2, 0);
-        small.set(new CellPosition(0, 0), new GridCell(true, false, false, 0));
-        small.set(new CellPosition(0, 1), new GridCell(false, true, false, 0));
-        small.set(new CellPosition(1, 0), new GridCell(false, true, false, 0));
-        small.set(new CellPosition(1, 1), new GridCell(false, true, false, 0));
-        assertTrue(small.allSafeCellsRevealed());
-    }
- 
-    @Test
-    public void testNotAllSafeCellsRevealed() {
-        MineSweeperBoard small = new MineSweeperBoard(2, 2, 0);
-        small.set(new CellPosition(0, 0), new GridCell(true, false, false, 0));
-        small.set(new CellPosition(0, 1), new GridCell(false, false, false, 0));
-        assertFalse(small.allSafeCellsRevealed());
     }
  
     @Test

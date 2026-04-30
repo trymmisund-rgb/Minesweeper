@@ -71,33 +71,6 @@ public class MineSweeperBoard implements IGrid{
         }
         return neighbors;
     }
-    /**
-     * Reveals all cells that contain a mine.
-     * Used when the game is lost to show all mine positions.
-     */
-    public void revealAllMines() {  
-        for (CellPosition pos : positions()) {  
-            GridCell cell = get(pos);  
-            if (cell.hasMine()) {  
-                set(pos, new GridCell(true, true, false, cell.neighbormines()));  
-            }  
-        }  
-    }
-    /**
-     * Returns true if all non-mine cells have been revealed.
-     * Used to check the win condition.
-     *
-     * @return true if all safe cells are revealed, false otherwise
-     */
-    public boolean allSafeCellsRevealed() {
-        for (CellPosition pos : positions()) {
-            GridCell cell = get(pos);
-            if (!cell.hasMine() && !cell.revealed()) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Returns the underlying IGrid.

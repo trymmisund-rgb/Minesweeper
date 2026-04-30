@@ -68,14 +68,14 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         revealCell(pos, cell);
         if (cell.hasMine()){
             lastRevealedMine = pos;
-            board.revealAllMines();
+            revealAllMines();
             gameState = GameState.GAME_OVER;
             return;
         }
         if (cell.neighbormines() == 0){
             revealNeighbors(pos);
         }
-        if (board.allSafeCellsRevealed()){
+        if (allSafeCellsRevealed()){
             gameState = GameState.GAME_WON;
         }
         
@@ -200,6 +200,35 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
     
     private boolean ignoredCells(GridCell cell){
         return cell.flagged() || cell.revealed();
+    }
+
+    /**
+     * Reveals all cells that contain a mine.
+     * Used when the game is lost to show all mine positions.
+     */
+    private void revealAllMines() {  
+        for (CellPosition pos : board.positions()) {  
+            GridCell cell = board.get(pos);  
+            if (cell.hasMine()) {  
+                board.set(pos, new GridCell(true, true, false, cell.neighbormines()));  
+            }  
+        }  
+    }
+
+    /**
+     * Returns true if all non-mine cells have been revealed.
+     * Used to check the win condition.
+     *
+     * @return true if all safe cells are revealed, false otherwise
+     */
+    private boolean allSafeCellsRevealed() {
+        for (CellPosition pos : board.positions()) {
+            GridCell cell = board.get(pos);
+            if (!cell.hasMine() && !cell.revealed()) {
+                return false;
+            }
+        }
+        return true;
     }
     
     private MineSweeperBoard createBoard(Difficulty difficulty) {
