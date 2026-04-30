@@ -57,7 +57,6 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
         if (gameState == GameState.GAME_OVER || gameState == GameState.GAME_WON || gameState == GameState.START_SCREEN) {
             return;
         }
-        if (!isValidClick(pos)) return;
         
         if (gameState == GameState.FIRST_MOVE){
             startGame(pos);
@@ -201,10 +200,6 @@ public class MineSweeperModel implements ControllableMineSweeperModel, ViewableM
     
     private boolean ignoredCells(GridCell cell){
         return cell.flagged() || cell.revealed();
-    }
-    
-    private boolean isValidClick(CellPosition pos){
-        return pos != null && board.positionIsOnGrid(pos);
     }
     
     private MineSweeperBoard createBoard(Difficulty difficulty) {
