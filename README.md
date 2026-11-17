@@ -1,7 +1,11 @@
-# Eksempel på klikking i ruter
+Minesweeper
 
-I dette eksempelet har [CellPositionToPixelConverter](./src/main/java/no/uib/inf101/sample/CellPositionToPixelConverter.java) fått en metode som oversetter «baklengs» fra punkt til rute, slik at man kan regne om fra museklikk til rad og kolonne i rutenettet.
+Minesweeper in Java/Swing, built as a semester assignment in INF101 Object-Oriented Programming at the University of Bergen (spring 2026).
 
-Konverteringsobjektet blir opprettet i [visningen](./src/main/java/no/uib/inf101/sample/View.java). [Kontrolleren](./src/main/java/no/uib/inf101/sample/Controller.java) får tilgang til konvertereren ved å kalle en metode på visningen.
+Features: three difficulty levels, safe first click, flood-fill reveal, flagging, timer and win/loss detection.
 
-![Illustration of running application](./clickablecells.gif)
+Controls: left click to reveal, right click to flag, 1/2/3 to choose difficulty, Enter to restart, Escape for the menu.
+
+Architecture: Model-View-Controller, with separate interfaces for what the view and controller can access. Mine placement goes through a MineFactory interface, so the game logic can be tested deterministically with JUnit 5 (mvn test).
+
+Run: Java 17 + Maven. Run no.uib.inf101.main.Main.
